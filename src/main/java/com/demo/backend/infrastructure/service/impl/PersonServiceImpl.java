@@ -15,11 +15,6 @@ public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
 
-    public PersonServiceImpl(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
-
-
     @Override
     public void savePerson(Person person) {
         com.demo.backend.infrastructure.persistence.entities.Person personEntity = new com.demo.backend.infrastructure.persistence.entities.Person();
@@ -86,14 +81,14 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<Person> findAll() {
         return personRepository.findAll().stream().map(
-                person -> new Person(
-                        person.getIdentificationNumber(),
-                        person.getFirstName(),
-                        person.getLastName(),
-                        person.isGender(),
-                        person.getAge(),
-                        person.getPhoneNumber(),
-                        person.getAddress()
+                personEntity -> new Person(
+                        personEntity.getIdentificationNumber(),
+                        personEntity.getFirstName(),
+                        personEntity.getLastName(),
+                        personEntity.isGender(),
+                        personEntity.getAge(),
+                        personEntity.getPhoneNumber(),
+                        personEntity.getAddress()
                 )
         ).toList();
     }
