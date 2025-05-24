@@ -7,6 +7,7 @@ import com.demo.backend.domain.Person;
 import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.service.dto.AccountDto;
 import com.demo.backend.infrastructure.service.dto.ClientDto;
+import com.demo.backend.infrastructure.service.dto.TransactionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -31,4 +32,5 @@ public interface MapperProfile {
     //TRANSACTION
     Transaction toDomainTransaction(com.demo.backend.infrastructure.persistence.entities.Transaction transaction);
     com.demo.backend.infrastructure.persistence.entities.Transaction toEntityTransaction(Transaction transaction);
+    com.demo.backend.infrastructure.persistence.entities.Transaction toEntityTransaction(TransactionDto transactionDto);
 }
