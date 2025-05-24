@@ -2,6 +2,7 @@ package com.demo.backend.infrastructure.service.impl;
 
 import com.demo.backend.domain.Account;
 import com.demo.backend.domain.Transaction;
+import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.persistence.repositories.TransactionRepository;
 import com.demo.backend.infrastructure.service.TransactionService;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final MapperProfile mapperProfile;
     @Override
     public void createTransaction(String accountNumber, String transactionType, double amount) {
 
@@ -28,16 +30,8 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll().stream().map(
                 transaction -> {
-                    Transaction transactionDomain = new Transaction();
-                    Account account = new Account();
-                    transactionDomain.setId(transaction.getId());
-                    transactionDomain.setTransactionType(transaction.getTransactionType());
-                    transactionDomain.setAmount(transaction.getAmount());
-                    transactionDomain.setCurrency(transaction.getCurrency());
-                    transactionDomain.setDate(transaction.getDate());
-                    transactionDomain.setTime(transaction.getTime());
-                    account.setAccountNumber(transaction.getAccount().getAccountNumber());
-                    account.setAccountType(transaction.getAccount().getAccountType());
+                    Transaction transactionDomain = mapperProfile.toDomainTransaction(transaction);
+                    Account account = mapperProfile.toDomainAccount(transaction.getAccount());
                     transactionDomain.setAccount(account);
                     return transactionDomain;
                 }

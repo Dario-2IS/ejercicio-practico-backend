@@ -1,6 +1,7 @@
 package com.demo.backend.infrastructure.service.impl;
 
 import com.demo.backend.domain.Person;
+import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.persistence.repositories.PersonRepository;
 import com.demo.backend.infrastructure.service.PersonService;
 import lombok.Data;
@@ -14,18 +15,11 @@ import java.util.Optional;
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
+    private final MapperProfile mapperProfile;
 
     @Override
     public void savePerson(Person person) {
-        com.demo.backend.infrastructure.persistence.entities.Person personEntity = new com.demo.backend.infrastructure.persistence.entities.Person();
-        personEntity.setIdentificationNumber(person.getIdentificationNumber());
-        personEntity.setFirstName(person.getFirstName());
-        personEntity.setLastName(person.getLastName());
-        personEntity.setGender(person.isGender());
-        personEntity.setAge(person.getAge());
-        personEntity.setPhoneNumber(person.getPhoneNumber());
-        personEntity.setAddress(person.getAddress());
-
+        com.demo.backend.infrastructure.persistence.entities.Person personEntity = mapperProfile.toEntityPerson(person);
         personRepository.save(personEntity);
     }
 
@@ -64,15 +58,7 @@ public class PersonServiceImpl implements PersonService {
         );
 
         if (person.isPresent()) {
-            return Person.builder()
-                    .identificationNumber(person.get().getIdentificationNumber())
-                    .firstName(person.get().getFirstName())
-                    .lastName(person.get().getLastName())
-                    .gender(person.get().isGender())
-                    .age(person.get().getAge())
-                    .phoneNumber(person.get().getPhoneNumber())
-                    .address(person.get().getAddress())
-                    .build();
+            return mapperProfile.toDomainPerson(person.get());
         } else {
             throw new RuntimeException("Person not found");
         }
@@ -81,15 +67,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<Person> findAll() {
         return personRepository.findAll().stream().map(
-                personEntity -> new Person(
-                        personEntity.getIdentificationNumber(),
-                        personEntity.getFirstName(),
-                        personEntity.getLastName(),
-                        personEntity.isGender(),
-                        personEntity.getAge(),
-                        personEntity.getPhoneNumber(),
-                        personEntity.getAddress()
-                )
+                mapperProfile::toDomainPerson
         ).toList();
     }
 }

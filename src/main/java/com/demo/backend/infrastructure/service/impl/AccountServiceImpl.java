@@ -2,6 +2,7 @@ package com.demo.backend.infrastructure.service.impl;
 
 import com.demo.backend.domain.Account;
 import com.demo.backend.domain.Client;
+import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.persistence.repositories.AccountRepository;
 import com.demo.backend.infrastructure.service.AccountService;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final MapperProfile mapperProfile;
     @Override
     public Account createAccount(Account account) {
         return null;
@@ -28,17 +30,8 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAllAccounts() {
         return accountRepository.findAll().stream().map(
                 account -> {
-                    Account accountDomain = new Account();
-                    Client client = new Client();
-                    accountDomain.setAccountNumber(account.getAccountNumber());
-                    accountDomain.setBalance(account.getBalance());
-                    client.setIdentificationNumber(account.getClient().getIdentificationNumber());
-                    client.setFirstName(account.getClient().getFirstName());
-                    client.setLastName(account.getClient().getLastName());
-                    client.setGender(account.getClient().isGender());
-                    client.setAge(account.getClient().getAge());
-                    client.setPhoneNumber(account.getClient().getPhoneNumber());
-                    client.setAddress(account.getClient().getAddress());
+                    Account accountDomain = mapperProfile.toDomainAccount(account);
+                    Client client = mapperProfile.toDomainClient(account.getClient());
                     accountDomain.setClient(client);
                     return accountDomain;
                 }
