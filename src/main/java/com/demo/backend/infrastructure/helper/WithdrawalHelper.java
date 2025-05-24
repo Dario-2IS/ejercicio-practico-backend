@@ -11,7 +11,10 @@ import java.util.Optional;
 @Service
 @Data
 public class WithdrawalHelper implements Withdrawal {
+
     private final AccountRepository accountRepository;
+
+    @Override
     public Account calculateBalance(String accountNumber, double debitAmount) {
         Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
         if (account.isPresent()) {
@@ -23,6 +26,16 @@ public class WithdrawalHelper implements Withdrawal {
             existingAccount.setBalance(newBalance);
             accountRepository.save(existingAccount);
             return existingAccount;
+        } else {
+            throw new IllegalArgumentException("Account not found");
+        }
+    }
+
+    @Override
+    public double getBalance(String accountNumber) {
+        Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
+        if (account.isPresent()) {
+            return account.get().getBalance();
         } else {
             throw new IllegalArgumentException("Account not found");
         }

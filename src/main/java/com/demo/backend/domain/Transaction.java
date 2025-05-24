@@ -12,6 +12,8 @@ public class Transaction {
     private Long id;
     private String transactionType;
     private double amount;
+    private double initialBalance;
+    private double finalBalance;
     private String currency;
     private String date;
     private String time;

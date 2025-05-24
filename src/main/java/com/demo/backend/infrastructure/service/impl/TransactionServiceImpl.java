@@ -5,10 +5,10 @@ import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.helper.DepositHelper;
 import com.demo.backend.infrastructure.helper.WithdrawalHelper;
 import com.demo.backend.infrastructure.mapper.MapperProfile;
-import com.demo.backend.infrastructure.persistence.repositories.AccountRepository;
 import com.demo.backend.infrastructure.persistence.repositories.TransactionRepository;
 import com.demo.backend.infrastructure.service.TransactionService;
 import com.demo.backend.infrastructure.service.dto.TransactionDto;
+import com.demo.backend.infrastructure.utils.DateUtils;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
@@ -19,22 +19,29 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final AccountRepository accountRepository;
     private final MapperProfile mapperProfile;
     private final DepositHelper depositHelper;
     private final WithdrawalHelper withdrawalHelper;
     @Override
     public void createTransaction(TransactionDto transactionDto) {
         com.demo.backend.infrastructure.persistence.entities.Account accountEntity = new com.demo.backend.infrastructure.persistence.entities.Account();
+        double initialBalance = 0.0;
+
         if(transactionDto.getTransactionType().equals("DEPOSIT")) {
+            initialBalance = depositHelper.getBalance(transactionDto.getAccountNumber());
             accountEntity = depositHelper.calculateBalance(transactionDto.getAccountNumber(), transactionDto.getAmount());
         } else if(transactionDto.getTransactionType().equals("WITHDRAWAL")) {
+            initialBalance = withdrawalHelper.getBalance(transactionDto.getAccountNumber());
             accountEntity = withdrawalHelper.calculateBalance(transactionDto.getAccountNumber(), transactionDto.getAmount());
         } else {
             throw new IllegalArgumentException("Invalid transaction type");
         }
 
         com.demo.backend.infrastructure.persistence.entities.Transaction transactionEntity = mapperProfile.toEntityTransaction(transactionDto);
+        transactionEntity.setDate(DateUtils.getCurrentDate());
+        transactionEntity.setTime(DateUtils.getCurrentTimeWithOffset());
+        transactionEntity.setInitialBalance(initialBalance);
+        transactionEntity.setFinalBalance(accountEntity.getBalance());
         transactionEntity.setAccount(accountEntity);
 
         transactionRepository.save(transactionEntity);
