@@ -7,7 +7,7 @@ import java.util.List;
 public interface ClientService {
     void saveClient(Client client);
 
-    void updateClient(String identificationNumber, String password, boolean state);
+    void updateClient(Client client);
 
     void deleteClient(String identificationNumber);
 

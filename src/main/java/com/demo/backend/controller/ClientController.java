@@ -1,26 +1,47 @@
 package com.demo.backend.controller;
 
 import com.demo.backend.domain.Client;
-import com.demo.backend.domain.Person;
+import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.service.ClientService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.demo.backend.infrastructure.service.dto.ClientDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
+@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;
-
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
+    private final MapperProfile mapperProfile;
 
     @GetMapping
-    public List<Client> getAll() {
-        return clientService.findAll();
+    public ResponseEntity<List<Client>> getAll() {
+        return ResponseEntity.ok(clientService.findAll());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable String id) {
+        return ResponseEntity.ok(clientService.findByIdentificationNumber(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createClient(@RequestBody ClientDto client) {
+        clientService.saveClient(mapperProfile.toDomainClient(client));
+        return ResponseEntity.created(null).body("Client created successfully");
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateClient(@RequestBody ClientDto client) {
+        clientService.updateClient(mapperProfile.toDomainClient(client));
+        return ResponseEntity.ok("Client updated successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteClient(@PathVariable String id) {
+        clientService.deleteClient(id);
+        return ResponseEntity.ok("Client deleted successfully");
     }
 }
