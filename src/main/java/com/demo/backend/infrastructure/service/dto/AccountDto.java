@@ -12,5 +12,5 @@ public class AccountDto {
     private double balance;
     private String currency;
     private boolean state;
-    private Client client;
+    private String clientIdentificationNumber;
 }
