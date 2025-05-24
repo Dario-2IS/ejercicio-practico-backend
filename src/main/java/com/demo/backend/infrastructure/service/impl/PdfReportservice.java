@@ -35,9 +35,9 @@ public class PdfReportservice {
             // Tabla con columnas
             PdfPTable table = new PdfPTable(9);
             table.setWidthPercentage(100);
-            table.setWidths(new int[]{1, 2, 2, 2, 2, 2, 2, 2, 2});
+            table.setWidths(new int[]{1, 2, 2, 2, 2, 2, 2, 1, 2});
 
-            Stream.of("ID", "Date", "Client", "Account Type", "Account Number", "Initial Balance", "Amount", "Movement","Final Balance")
+            Stream.of("ID", "Date", "Client", "Account Type", "Account Number", "Initial Balance", "Amount", "(+/-)","Final Balance")
                     .forEach(headerTitle -> {
                         PdfPCell header = new PdfPCell();
                         header.setBackgroundColor(Color.LIGHT_GRAY);
