@@ -16,7 +16,6 @@ import java.util.List;
 public class ClientController {
 
     private final ClientService clientService;
-    private final MapperProfile mapperProfile;
 
     @GetMapping
     public ResponseEntity<List<Client>> getAll() {
@@ -29,13 +28,13 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<String> createClient(@RequestBody ClientDto client) {
-        clientService.saveClient(mapperProfile.toDomainClient(client));
+        clientService.saveClient(client);
         return ResponseEntity.created(null).body("Client created successfully");
     }
 
     @PutMapping
     public ResponseEntity<String> updateClient(@RequestBody ClientDto client) {
-        clientService.updateClient(mapperProfile.toDomainClient(client));
+        clientService.updateClient(client);
         return ResponseEntity.ok("Client updated successfully");
     }
 

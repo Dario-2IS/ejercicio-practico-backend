@@ -4,6 +4,7 @@ import com.demo.backend.domain.Client;
 import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.persistence.repositories.ClientRepository;
 import com.demo.backend.infrastructure.service.ClientService;
+import com.demo.backend.infrastructure.service.dto.ClientDto;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
@@ -17,29 +18,22 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final MapperProfile mapperProfile;
     @Override
-    public void saveClient(Client client) {
-        if (clientRepository.existsByIdentificationNumber(client.getIdentificationNumber())) {
+    public void saveClient(ClientDto clientDto) {
+        if (clientRepository.existsByIdentificationNumber(clientDto.getIdentificationNumber())) {
             throw new IllegalArgumentException("Client already exists with this identification number.");
         }
-        com.demo.backend.infrastructure.persistence.entities.Client clientEntity = mapperProfile.toEntityClient(client);
+        com.demo.backend.infrastructure.persistence.entities.Client clientEntity = mapperProfile.toEntityClient(clientDto);
         clientRepository.save(clientEntity);
     }
 
     @Override
-    public void updateClient(Client updatedClient) {
-        Optional<com.demo.backend.infrastructure.persistence.entities.Client> client = clientRepository.findByIdentificationNumber(
-                updatedClient.getIdentificationNumber() == null ? null : updatedClient.getIdentificationNumber().trim()
+    public void updateClient(ClientDto clientDto) {
+        Optional<com.demo.backend.infrastructure.persistence.entities.Client> existClient = clientRepository.findByIdentificationNumber(
+                clientDto.getIdentificationNumber() == null ? null : clientDto.getIdentificationNumber().trim()
         );
-        if (client.isPresent()) {
-            com.demo.backend.infrastructure.persistence.entities.Client clientEntity = client.get();
-            clientEntity.setFirstName(updatedClient.getFirstName());
-            clientEntity.setLastName(updatedClient.getLastName());
-            clientEntity.setGender(updatedClient.isGender());
-            clientEntity.setAge(updatedClient.getAge());
-            clientEntity.setPhoneNumber(updatedClient.getPhoneNumber());
-            clientEntity.setAddress(updatedClient.getAddress());
-            clientEntity.setPassword(updatedClient.getPassword());
-            clientEntity.setState(updatedClient.isState());
+        if (existClient.isPresent()) {
+            com.demo.backend.infrastructure.persistence.entities.Client clientEntity = mapperProfile.toEntityClient(clientDto);
+            clientEntity.setId(existClient.get().getId());
             clientRepository.save(clientEntity);
         } else {
             throw new RuntimeException("Client not found");

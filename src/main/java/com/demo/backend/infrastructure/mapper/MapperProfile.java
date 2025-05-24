@@ -19,10 +19,9 @@ public interface MapperProfile {
     com.demo.backend.infrastructure.persistence.entities.Person toEntityPerson(Person person);
 
     //CLIENT
-    Client toDomainClient(ClientDto clientDto);
-    ClientDto toDtoClient(Client client);
     Client toDomainClient(com.demo.backend.infrastructure.persistence.entities.Client client);
     com.demo.backend.infrastructure.persistence.entities.Client toEntityClient(Client client);
+    com.demo.backend.infrastructure.persistence.entities.Client toEntityClient(ClientDto clientDto);
 
     //ACCOUNT
     Account toDomainAccount(com.demo.backend.infrastructure.persistence.entities.Account account);

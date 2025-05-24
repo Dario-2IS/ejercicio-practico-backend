@@ -1,13 +1,14 @@
 package com.demo.backend.infrastructure.service;
 
 import com.demo.backend.domain.Client;
+import com.demo.backend.infrastructure.service.dto.ClientDto;
 
 import java.util.List;
 
 public interface ClientService {
-    void saveClient(Client client);
+    void saveClient(ClientDto clientDto);
 
-    void updateClient(Client client);
+    void updateClient(ClientDto clientDto);
 
     void deleteClient(String identificationNumber);
 
