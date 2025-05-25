@@ -3,6 +3,7 @@ package com.demo.backend.controller;
 import com.demo.backend.domain.Client;
 import com.demo.backend.infrastructure.service.ClientService;
 import com.demo.backend.infrastructure.service.dto.ClientDto;
+import com.demo.backend.infrastructure.service.template.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -59,13 +60,13 @@ class ClientControllerTest {
         when(clientService.findAll())
                 .thenReturn(Arrays.asList(testClient1, testClient2));
 
-        ResponseEntity<List<Client>> response = clientController.getAll();
+        ResponseEntity<ApiResponse<List<Client>>> response = clientController.getAll();
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
-        assertEquals("123", response.getBody().get(0).getIdentificationNumber());
-        assertEquals("456", response.getBody().get(1).getIdentificationNumber());
+        assertEquals(2, response.getBody().getData().size());
+        assertEquals("123", response.getBody().getData().get(0).getIdentificationNumber());
+        assertEquals("456", response.getBody().getData().get(1).getIdentificationNumber());
 
         verify(clientService).findAll();
     }
@@ -75,12 +76,12 @@ class ClientControllerTest {
         when(clientService.findByIdentificationNumber("123"))
                 .thenReturn(testClient1);
 
-        ResponseEntity<Client> response = clientController.getClientById("123");
+        ResponseEntity<ApiResponse<Client>> response = clientController.getClientById("123");
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("123", response.getBody().getIdentificationNumber());
-        assertEquals("Juan", response.getBody().getFirstName());
+        assertEquals("123", response.getBody().getData().getIdentificationNumber());
+        assertEquals("Juan", response.getBody().getData().getFirstName());
 
         verify(clientService).findByIdentificationNumber("123");
     }
@@ -90,11 +91,11 @@ class ClientControllerTest {
 
         doNothing().when(clientService).saveClient(testclientDto);
 
-        ResponseEntity<String> response = clientController.createClient(testclientDto);
+        ResponseEntity<ApiResponse<Void>> response = clientController.createClient(testclientDto);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Client created successfully", response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Client created successfully", response.getBody().getMessage());
 
         verify(clientService).saveClient(testclientDto);
     }
@@ -102,22 +103,22 @@ class ClientControllerTest {
     @Test
     void updateClient() {
 
-        ResponseEntity<String> response = clientController.updateClient(testclientDto);
+        ResponseEntity<ApiResponse<Void>> response = clientController.updateClient(testclientDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Client updated successfully", response.getBody());
+        assertEquals("Client updated successfully", response.getBody().getMessage());
 
         verify(clientService).updateClient(testclientDto);
     }
 
     @Test
     void deleteClient() {
-        ResponseEntity<String> response = clientController.deleteClient("123");
+        ResponseEntity<ApiResponse<Void>> response = clientController.deleteClient("123");
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Client deleted successfully", response.getBody());
+        assertEquals("Client deleted successfully", response.getBody().getMessage());
 
         verify(clientService).deleteClient("123");
     }

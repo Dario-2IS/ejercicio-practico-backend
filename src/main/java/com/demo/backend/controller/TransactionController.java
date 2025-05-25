@@ -3,6 +3,7 @@ package com.demo.backend.controller;
 import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.service.TransactionService;
 import com.demo.backend.infrastructure.service.dto.TransactionDto;
+import com.demo.backend.infrastructure.service.template.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,28 +17,44 @@ public class TransactionController {
      private final TransactionService transactionService;
 
      @GetMapping
-     public ResponseEntity<List<Transaction>> getAll() {
-         return ResponseEntity.ok(transactionService.getAllTransactions());
+     public ResponseEntity<ApiResponse<List<Transaction>>> getAll() {
+         ApiResponse<List<Transaction>> response = new ApiResponse<>();
+         List<Transaction> transactions = transactionService.getAllTransactions();
+         response.setData(transactions);
+         response.setMessage("Transactions retrieved successfully");
+         return ResponseEntity.ok(response);
      }
      @GetMapping("/id/{transactionId}")
-     public ResponseEntity<List<Transaction>> getTransactionById(@PathVariable Long transactionId) {
-         return ResponseEntity.ok(transactionService.getTransactionById(transactionId));
+     public ResponseEntity<ApiResponse<List<Transaction>>> getTransactionById(@PathVariable Long transactionId) {
+         ApiResponse<List<Transaction>> response = new ApiResponse<>();
+         List<Transaction> transactions = transactionService.getTransactionById(transactionId);
+         response.setData(transactions);
+         response.setMessage("Transaction retrieved successfully");
+         return ResponseEntity.ok(response);
      }
 
     @GetMapping("/{accountNumber}")
-    public ResponseEntity<List<Transaction>> getTransactionByAccountNumber(@PathVariable String accountNumber) {
-        return ResponseEntity.ok(transactionService.getTransactionsByAccountNumber(accountNumber));
+    public ResponseEntity<ApiResponse<List<Transaction>>> getTransactionByAccountNumber(@PathVariable String accountNumber) {
+        ApiResponse<List<Transaction>> response = new ApiResponse<>();
+        List<Transaction> transactions = transactionService.getTransactionsByAccountNumber(accountNumber);
+        response.setData(transactions);
+        response.setMessage("Transactions retrieved successfully");
+        return ResponseEntity.ok(response);
     }
 
      @PostMapping
-     public ResponseEntity<String> createTransaction(@RequestBody TransactionDto transactionDto) {
+     public ResponseEntity<ApiResponse<Void>> createTransaction(@RequestBody TransactionDto transactionDto) {
+         ApiResponse<Void> response = new ApiResponse<>();
          transactionService.createTransaction(transactionDto);
-         return ResponseEntity.created(null).body("Transaction created successfully");
+         response.setMessage("Transaction created successfully");
+         return ResponseEntity.ok(response);
      }
 
      @DeleteMapping("/{transactionId}")
-     public ResponseEntity<Void> deleteTransaction(@PathVariable Long transactionId) {
+     public ResponseEntity<ApiResponse<Void>> deleteTransaction(@PathVariable Long transactionId) {
+         ApiResponse<Void> response = new ApiResponse<>();
          transactionService.deleteTransaction(transactionId);
-         return ResponseEntity.noContent().build();
+         response.setMessage("Transaction deleted successfully");
+         return ResponseEntity.ok(response);
      }
 }

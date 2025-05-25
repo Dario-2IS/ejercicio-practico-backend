@@ -3,6 +3,7 @@ package com.demo.backend.controller;
 import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.service.TransactionService;
 import com.demo.backend.infrastructure.service.dto.TransactionDto;
+import com.demo.backend.infrastructure.service.template.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -54,11 +55,11 @@ class TransactionControllerTest {
 
     @Test
     void getAll() {
-        ResponseEntity<List<Transaction>> response = transactionController.getAll();
+        ResponseEntity<ApiResponse<List<Transaction>>> response = transactionController.getAll();
 
         assertNotNull(response);
         assertEquals(200, response.getStatusCode().value());
-        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getData());
     }
 
     @Test
@@ -66,11 +67,11 @@ class TransactionControllerTest {
         when(transactionService.getTransactionById(1L))
                 .thenReturn(transactionList);
 
-        ResponseEntity<List<Transaction>> response = transactionController.getTransactionById(1L);
+        ResponseEntity<ApiResponse<List<Transaction>>> response = transactionController.getTransactionById(1L);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(transactionList, response.getBody());
+        assertEquals(transactionList, response.getBody().getData());
         verify(transactionService).getTransactionById(1L);
     }
 
@@ -79,11 +80,11 @@ class TransactionControllerTest {
         when(transactionService.getTransactionsByAccountNumber("123"))
                 .thenReturn(transactionList);
 
-        ResponseEntity<List<Transaction>> response = transactionController.getTransactionByAccountNumber("123");
+        ResponseEntity<ApiResponse<List<Transaction>>> response = transactionController.getTransactionByAccountNumber("123");
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(transactionList, response.getBody());
+        assertEquals(transactionList, response.getBody().getData());
         verify(transactionService).getTransactionsByAccountNumber("123");
     }
 
@@ -91,20 +92,20 @@ class TransactionControllerTest {
     void createTransaction() {
         doNothing().when(transactionService).createTransaction(testTransactionDto);
 
-        ResponseEntity<String> response = transactionController.createTransaction(testTransactionDto);
+        ResponseEntity<ApiResponse<Void>> response = transactionController.createTransaction(testTransactionDto);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Transaction created successfully", response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Transaction created successfully", response.getBody().getMessage());
         verify(transactionService).createTransaction(testTransactionDto);
     }
 
     @Test
     void deleteTransaction() {
-        ResponseEntity<Void> response = transactionController.deleteTransaction(1L);
+        ResponseEntity<ApiResponse<Void>> response = transactionController.deleteTransaction(1L);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(transactionService).deleteTransaction(1L);
     }
 

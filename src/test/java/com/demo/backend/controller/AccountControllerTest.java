@@ -3,6 +3,7 @@ package com.demo.backend.controller;
 import com.demo.backend.domain.Account;
 import com.demo.backend.infrastructure.service.AccountService;
 import com.demo.backend.infrastructure.service.dto.AccountDto;
+import com.demo.backend.infrastructure.service.template.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -54,13 +55,13 @@ class AccountControllerTest {
         when(accountService.getAllAccounts())
                 .thenReturn(Arrays.asList(testAccount1, testAccount2));
 
-        ResponseEntity<List<Account>> response = accountController.getAll();
+        ResponseEntity<ApiResponse<List<Account>>> response = accountController.getAll();
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
-        assertEquals("123", response.getBody().get(0).getAccountNumber());
-        assertEquals("456", response.getBody().get(1).getAccountNumber());
+        assertEquals(2, response.getBody().getData().size());
+        assertEquals("123", response.getBody().getData().get(0).getAccountNumber());
+        assertEquals("456", response.getBody().getData().get(1).getAccountNumber());
 
         verify(accountService).getAllAccounts();
     }
@@ -70,12 +71,12 @@ class AccountControllerTest {
         when(accountService.getAccountByNumber("123"))
                 .thenReturn(testAccount1);
 
-        ResponseEntity<Account> response = accountController.getAccountByNumber("123");
+        ResponseEntity<ApiResponse<Account>> response = accountController.getAccountByNumber("123");
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("123", response.getBody().getAccountNumber());
-        assertEquals("Savings", response.getBody().getAccountType());
+        assertEquals("123", response.getBody().getData().getAccountNumber());
+        assertEquals("Savings", response.getBody().getData().getAccountType());
 
         verify(accountService).getAccountByNumber("123");
     }
@@ -84,33 +85,33 @@ class AccountControllerTest {
     void createAccount() {
         doNothing().when(accountService).createAccount(testAccountDto);
 
-        ResponseEntity<String> response = accountController.createAccount(testAccountDto);
+        ResponseEntity<ApiResponse<Void>> response = accountController.createAccount(testAccountDto);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Account created successfully", response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Account created successfully", response.getBody().getMessage());
 
         verify(accountService).createAccount(testAccountDto);
     }
 
     @Test
     void updateAccount() {
-        ResponseEntity<String> response = accountController.updateAccount(testAccountDto);
+        ResponseEntity<ApiResponse<Void>> response = accountController.updateAccount(testAccountDto);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Account updated successfully", response.getBody());
+        assertEquals("Account updated successfully", response.getBody().getMessage());
 
         verify(accountService).updateAccount(testAccountDto);
     }
 
     @Test
     void deleteAccount() {
-        ResponseEntity<Void> response = accountController.deleteAccount("123");
+        ResponseEntity<ApiResponse<Void>> response = accountController.deleteAccount("123");
 
         assertNotNull(response);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().getData());
 
         verify(accountService).deleteAccount("123");
     }

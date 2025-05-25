@@ -4,6 +4,7 @@ import com.demo.backend.domain.Account;
 import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.service.AccountService;
 import com.demo.backend.infrastructure.service.dto.AccountDto;
+import com.demo.backend.infrastructure.service.template.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,30 +18,44 @@ public class AccountController {
      private final AccountService accountService;
 
      @GetMapping
-     public ResponseEntity<List<Account>> getAll() {
-         return ResponseEntity.ok(accountService.getAllAccounts());
+     public ResponseEntity<ApiResponse<List<Account>>> getAll() {
+         ApiResponse<List<Account>> response = new ApiResponse<>();
+         List<Account> accounts = accountService.getAllAccounts();
+         response.setData(accounts);
+         response.setMessage("Accounts retrieved successfully");
+         return ResponseEntity.ok(response);
      }
 
      @GetMapping("/{accountNumber}")
-     public ResponseEntity<Account> getAccountByNumber(@PathVariable String accountNumber) {
-         return ResponseEntity.ok(accountService.getAccountByNumber(accountNumber));
+     public ResponseEntity<ApiResponse<Account>> getAccountByNumber(@PathVariable String accountNumber) {
+         ApiResponse<Account> response = new ApiResponse<>();
+         Account account = accountService.getAccountByNumber(accountNumber);
+         response.setData(account);
+         response.setMessage("Account retrieved successfully");
+         return ResponseEntity.ok(response);
      }
 
      @PostMapping
-     public ResponseEntity<String> createAccount(@RequestBody AccountDto accountDto) {
+     public ResponseEntity<ApiResponse<Void>> createAccount(@RequestBody AccountDto accountDto) {
+         ApiResponse<Void> response = new ApiResponse<>();
          accountService.createAccount(accountDto);
-         return ResponseEntity.created(null).body("Account created successfully");
+         response.setMessage("Account created successfully");
+         return ResponseEntity.ok(response);
      }
 
      @PutMapping
-     public ResponseEntity<String> updateAccount(@RequestBody AccountDto accountDto) {
+     public ResponseEntity<ApiResponse<Void>> updateAccount(@RequestBody AccountDto accountDto) {
+         ApiResponse<Void> response = new ApiResponse<>();
          accountService.updateAccount(accountDto);
-         return ResponseEntity.ok("Account updated successfully");
+         response.setMessage("Account updated successfully");
+         return ResponseEntity.ok(response);
      }
 
      @DeleteMapping("/{accountNumber}")
-     public ResponseEntity<Void> deleteAccount(@PathVariable String accountNumber) {
+     public ResponseEntity<ApiResponse<Void>> deleteAccount(@PathVariable String accountNumber) {
+         ApiResponse<Void> response = new ApiResponse<>();
          accountService.deleteAccount(accountNumber);
-         return ResponseEntity.noContent().build();
+         response.setMessage("Account deleted successfully");
+         return ResponseEntity.ok(response);
      }
 }
