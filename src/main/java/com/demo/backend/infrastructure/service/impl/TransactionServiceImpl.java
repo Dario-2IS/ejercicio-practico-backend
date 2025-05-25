@@ -12,6 +12,7 @@ import com.demo.backend.infrastructure.utils.DateUtils;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -69,6 +70,27 @@ public class TransactionServiceImpl implements TransactionService {
                     return transactionDomain;
                 }
         ).toList();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsReport(String accountNumber, String startDate, String endDate) {
+        LocalDate startLocalDate = DateUtils.parseDate(startDate);
+        LocalDate endLocalDate = DateUtils.parseDate(endDate);
+
+        return transactionRepository.findByAccount_AccountNumber(accountNumber)
+                .stream()
+                .filter(transaction -> {
+                    LocalDate transactionDate = DateUtils.parseDate(transaction.getDate());
+                    return (transactionDate.isEqual(startLocalDate) || transactionDate.isAfter(startLocalDate)) &&
+                            (transactionDate.isEqual(endLocalDate) || transactionDate.isBefore(endLocalDate));
+                })
+                .map(transaction -> {
+                    Transaction transactionDomain = mapperProfile.toDomainTransaction(transaction);
+                    Account account = mapperProfile.toDomainAccount(transaction.getAccount());
+                    transactionDomain.setAccount(account);
+                    return transactionDomain;
+                })
+                .toList();
     }
 
     @Override

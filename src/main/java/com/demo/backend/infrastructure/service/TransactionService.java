@@ -10,6 +10,7 @@ public interface TransactionService {
 
     List<Transaction> getTransactionById(Long transactionId);
     List<Transaction> getTransactionsByAccountNumber(String accountNumber);
+    List<Transaction> getTransactionsReport(String accountNumber, String startDate, String endDate);
 
     List<Transaction> getAllTransactions();
 

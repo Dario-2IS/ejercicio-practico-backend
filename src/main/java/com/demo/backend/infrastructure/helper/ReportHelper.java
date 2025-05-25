@@ -1,8 +1,8 @@
 package com.demo.backend.infrastructure.helper;
 
 import com.demo.backend.domain.Movement;
-import com.demo.backend.infrastructure.persistence.entities.Transaction;
-import com.demo.backend.infrastructure.persistence.repositories.TransactionRepository;
+import com.demo.backend.domain.Transaction;
+import com.demo.backend.infrastructure.service.TransactionService;
 import com.demo.backend.infrastructure.service.impl.PdfReportservice;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
@@ -16,12 +16,14 @@ import java.util.Objects;
 @Data
 public class ReportHelper {
 
-    private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
     private final PdfReportservice pdfReportService;
 
-    public byte[] generateTransactionReport(String accountNumber) {
-        List<Transaction> transactions = transactionRepository.findByAccount_AccountNumber(accountNumber);
-        transactions.sort((t1, t2) -> t1.getId().compareTo(t2.getId()));
+    public byte[] generateTransactionReport(String accountNumber, String startDate, String endDate) {
+        List<Transaction> transactions = transactionService.getTransactionsReport(accountNumber, startDate, endDate);
+        if (transactions.isEmpty()) {
+            throw new IllegalArgumentException("No transactions found for the given account number and date range.");
+        }
         List<Movement> movements = transactions.stream()
                 .map(transaction -> new Movement(
                         transaction.getId(),

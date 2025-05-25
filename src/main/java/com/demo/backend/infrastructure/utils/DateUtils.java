@@ -18,4 +18,8 @@ public final class DateUtils {
     public static String getCurrentTimeWithOffset() {
         return OffsetTime.now(ZoneOffset.UTC).toString();
     }
+
+    public static LocalDate parseDate(String startDate) {
+        return LocalDate.parse(startDate, FORMATTER);
+    }
 }
