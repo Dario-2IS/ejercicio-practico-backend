@@ -16,7 +16,7 @@ public class Transaction {
     private double amount;
     private double initialBalance;
     private double finalBalance;
-    private String currency;
+    private String currency = "USD";
     private String date;
     private String time;
     @ManyToOne(optional = false)

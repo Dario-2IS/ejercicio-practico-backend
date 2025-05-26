@@ -16,7 +16,7 @@ public class Account {
     private String accountNumber;
     private String accountType;
     private double balance;
-    private String currency;
+    private String currency = "USD";
     private boolean state;
     @ManyToOne(optional = false)
     @JoinColumn(name = "client_id", nullable = false)

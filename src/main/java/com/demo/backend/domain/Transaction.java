@@ -14,7 +14,6 @@ public class Transaction {
     private double amount;
     private double initialBalance;
     private double finalBalance;
-    private String currency;
     private String date;
     private String time;
     private Account account;

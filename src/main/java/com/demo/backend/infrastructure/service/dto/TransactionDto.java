@@ -8,7 +8,6 @@ import lombok.Data;
 public class TransactionDto {
     private String transactionType;
     private double amount;
-    private String currency;
     private String date;
     private String time;
     private String accountNumber;

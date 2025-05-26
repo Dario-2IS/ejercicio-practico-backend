@@ -38,7 +38,8 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Invalid transaction type");
         }
 
-        com.demo.backend.infrastructure.persistence.entities.Transaction transactionEntity = mapperProfile.toEntityTransaction(transactionDto);
+        com.demo.backend.infrastructure.persistence.entities.Transaction transactionEntity = new com.demo.backend.infrastructure.persistence.entities.Transaction();
+        transactionEntity = mapperProfile.toEntityTransaction(transactionDto);
         transactionEntity.setDate(DateUtils.getCurrentDate());
         transactionEntity.setTime(DateUtils.getCurrentTimeWithOffset());
         transactionEntity.setInitialBalance(initialBalance);

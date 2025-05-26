@@ -22,7 +22,8 @@ public class AccountServiceImpl implements AccountService {
     private final MapperProfile mapperProfile;
     @Override
     public void createAccount(AccountDto accountDto) {
-        com.demo.backend.infrastructure.persistence.entities.Account accountEntity = mapperProfile.toEntityAccount(accountDto);
+        com.demo.backend.infrastructure.persistence.entities.Account accountEntity = new com.demo.backend.infrastructure.persistence.entities.Account();
+        accountEntity = mapperProfile.toEntityAccount(accountDto);
         Optional<com.demo.backend.infrastructure.persistence.entities.Client> clientEntity = clientRepository.findByIdentificationNumber(accountDto.getClientIdentificationNumber());
 
         if (clientEntity.isEmpty()) {
