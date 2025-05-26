@@ -200,7 +200,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"accountNumber\": \"ACC5678299\",\n    \"accountType\": \"Savings\",\n    \"balance\": 5000.0,\n    \"currency\": \"USD\",\n    \"state\": true,\n    \"clientIdentificationNumber\": \"1234567890\"\n}",
+							"raw": "{\n    \"accountNumber\": \"ACC5678299\",\n    \"accountType\": \"Savings\",\n    \"balance\": 5000.0,\n    \"state\": true,\n    \"clientIdentificationNumber\": \"1234567890\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -365,7 +365,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "/*\n{\n    \"transactionType\": \"DEPOSIT\",\n    \"amount\": 350.90,\n    \"currency\": \"USD\",\n    \"accountNumber\": \"ACC5678299\"\n}\n*/\n\n\n{\n    \"transactionType\": \"WITHDRAWAL\",\n    \"amount\": 75.50,\n    \"currency\": \"USD\",\n    \"accountNumber\": \"ACC5678299\"\n}\n",
+							"raw": "/*\n{\n    \"transactionType\": \"DEPOSIT\",\n    \"amount\": 350.90,\n    \"accountNumber\": \"ACC5678299\"\n}\n*/\n\n\n{\n    \"transactionType\": \"WITHDRAWAL\",\n    \"amount\": 5000.50,\n    \"accountNumber\": \"ACC5678299\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
