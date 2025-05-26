@@ -1,5 +1,6 @@
 package com.demo.backend.infrastructure.service.impl;
 
+import com.demo.backend.business.exception.TransactionException;
 import com.demo.backend.domain.Account;
 import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.helper.DepositHelper;
@@ -35,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
             initialBalance = withdrawalHelper.getBalance(transactionDto.getAccountNumber());
             accountEntity = withdrawalHelper.calculateBalance(transactionDto.getAccountNumber(), transactionDto.getAmount());
         } else {
-            throw new IllegalArgumentException("Invalid transaction type");
+            throw new TransactionException("Invalid transaction type");
         }
 
         com.demo.backend.infrastructure.persistence.entities.Transaction transactionEntity = new com.demo.backend.infrastructure.persistence.entities.Transaction();

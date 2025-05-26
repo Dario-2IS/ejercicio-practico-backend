@@ -1,5 +1,6 @@
 package com.demo.backend.infrastructure.helper;
 
+import com.demo.backend.business.exception.ReportException;
 import com.demo.backend.domain.Movement;
 import com.demo.backend.domain.Transaction;
 import com.demo.backend.infrastructure.service.TransactionService;
@@ -22,7 +23,7 @@ public class ReportHelper {
     public byte[] generateTransactionReport(String accountNumber, String startDate, String endDate) {
         List<Transaction> transactions = transactionService.getTransactionsReport(accountNumber, startDate, endDate);
         if (transactions.isEmpty()) {
-            throw new IllegalArgumentException("No transactions found for the given account number and date range.");
+            throw new ReportException("No transactions found for the given account number and date range.");
         }
         List<Movement> movements = transactions.stream()
                 .map(transaction -> new Movement(

@@ -1,6 +1,7 @@
 package com.demo.backend.infrastructure.helper;
 
 import com.demo.backend.business.Withdrawal;
+import com.demo.backend.business.exception.AccountException;
 import com.demo.backend.infrastructure.persistence.entities.Account;
 import com.demo.backend.infrastructure.persistence.repositories.AccountRepository;
 import lombok.Data;
@@ -21,13 +22,13 @@ public class WithdrawalHelper implements Withdrawal {
             Account existingAccount = account.get();
             double newBalance = existingAccount.getBalance() - debitAmount;
             if (newBalance < 0) {
-                throw new IllegalArgumentException("Insufficient funds");
+                throw new AccountException("Insufficient funds");
             }
             existingAccount.setBalance(newBalance);
             accountRepository.save(existingAccount);
             return existingAccount;
         } else {
-            throw new IllegalArgumentException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 
@@ -37,7 +38,7 @@ public class WithdrawalHelper implements Withdrawal {
         if (account.isPresent()) {
             return account.get().getBalance();
         } else {
-            throw new IllegalArgumentException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 }

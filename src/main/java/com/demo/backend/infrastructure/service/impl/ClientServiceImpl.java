@@ -1,5 +1,6 @@
 package com.demo.backend.infrastructure.service.impl;
 
+import com.demo.backend.business.exception.ClientException;
 import com.demo.backend.domain.Client;
 import com.demo.backend.infrastructure.mapper.MapperProfile;
 import com.demo.backend.infrastructure.persistence.repositories.ClientRepository;
@@ -20,7 +21,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void saveClient(ClientDto clientDto) {
         if (clientRepository.existsByIdentificationNumber(clientDto.getIdentificationNumber())) {
-            throw new IllegalArgumentException("Client already exists with this identification number.");
+            throw new ClientException("Client already exists with this identification number.");
         }
         com.demo.backend.infrastructure.persistence.entities.Client clientEntity = mapperProfile.toEntityClient(clientDto);
         clientRepository.save(clientEntity);
@@ -36,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
             clientEntity.setId(existClient.get().getId());
             clientRepository.save(clientEntity);
         } else {
-            throw new RuntimeException("Client not found");
+            throw new ClientException("Client not found");
         }
     }
 
@@ -48,7 +49,7 @@ public class ClientServiceImpl implements ClientService {
         if (client.isPresent()) {
             clientRepository.delete(client.get());
         } else {
-            throw new RuntimeException("Client not found");
+            throw new ClientException("Client not found");
         }
     }
 
@@ -61,7 +62,7 @@ public class ClientServiceImpl implements ClientService {
         if (client.isPresent()) {
             return mapperProfile.toDomainClient(client.get());
         } else {
-            throw new RuntimeException("Person not found");
+            throw new ClientException("Client not found");
         }
     }
 

@@ -1,5 +1,7 @@
 package com.demo.backend.infrastructure.service.impl;
 
+import com.demo.backend.business.exception.AccountException;
+import com.demo.backend.business.exception.ClientException;
 import com.demo.backend.domain.Account;
 import com.demo.backend.domain.Client;
 import com.demo.backend.infrastructure.mapper.MapperProfile;
@@ -27,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
         Optional<com.demo.backend.infrastructure.persistence.entities.Client> clientEntity = clientRepository.findByIdentificationNumber(accountDto.getClientIdentificationNumber());
 
         if (clientEntity.isEmpty()) {
-            throw new RuntimeException("Client not found");
+            throw new ClientException("Client not found");
         }
 
         accountEntity.setClient(clientEntity.get());
@@ -63,11 +65,11 @@ public class AccountServiceImpl implements AccountService {
         Optional<com.demo.backend.infrastructure.persistence.entities.Account> existingAccount = accountRepository.findByAccountNumber(accountDto.getAccountNumber());
 
         if (existingAccount.isEmpty()) {
-            throw new RuntimeException("Account not found");
+            throw new AccountException("Account not found");
         }
 
         com.demo.backend.infrastructure.persistence.entities.Client clientEntity = clientRepository.findByIdentificationNumber(accountDto.getClientIdentificationNumber())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ClientException("Client not found"));
 
         accountEntity.setId(existingAccount.get().getId());
         accountEntity.setClient(clientEntity);
@@ -79,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
         Optional<com.demo.backend.infrastructure.persistence.entities.Account> accountEntity = accountRepository.findByAccountNumber(accountNumber);
 
         if (accountEntity.isEmpty()) {
-            throw new RuntimeException("Account not found");
+            throw new AccountException("Account not found");
         }
 
         accountRepository.delete(accountEntity.get());
